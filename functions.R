@@ -1,5 +1,5 @@
 # ============================================
-# functions.R - Clean version with English comments
+# functions.R
 # ============================================
 
 library(tidyverse)
