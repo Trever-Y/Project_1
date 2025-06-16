@@ -1,120 +1,60 @@
----
-title: "Project 1"
-author: "Trever Yoder and Koji Takagi"
-format: pdf
-editor: visual
----
+# =============================================
+# test_script.R - For validating functions.R
+# =============================================
 
-## Question 1: Load Packages and Functions
-
-In this section, we load all necessary libraries and our custom functions file.
-
-<<<<<<< HEAD
-## Running Code
-
-##Read in Data
-
-=======
->>>>>>> 4f661713d2cbc08a3bc64ebe6c8ba67a0dbb20aa
-```{r setup, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(readr)
 library(ggplot2)
 
-# Load custom functions
+# Load your custom functions
 source("functions.R")
-```
 
-## Question 2: Process the EDU Data Sets
-
-We run our wrapper function on the two EDU datasets and inspect the results.
-
-```{r}
+# ---------------------------------------------
+# 1) EDU Data Processing
+# ---------------------------------------------
 edu1 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", value = "Enrollment Value")
 edu2 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/EDU01b.csv", value = "Enrollment Value")
 
-# Inspect to ensure correctness
-head(edu1$county)
-head(edu1$noncounty)
-
-```
-
-## Question 3: Combine EDU Data Sets
-
-Here we use our combining function to merge the two processed data sets.
-
-```{r}
 edu_combined <- combine_wrapper_results(edu1, edu2)
+
+# Check output
 head(edu_combined$county)
 head(edu_combined$noncounty)
 
-```
-
-## Question 4: State Plot for EDU Data
-
-This plot shows the mean enrollment by Division across years.
-
-```{r}
+# ---------------------------------------------
+# 2) EDU State Plot
+# ---------------------------------------------
 plot(edu_combined$noncounty, var_name = "Enrollment Value")
 
-```
-
-## Question 5: County Plots for EDU Data
-
-Below are various plots for county data, demonstrating flexibility in selecting state, top/bottom, and count.
-
-```{r}
-# NC, top 20
+# ---------------------------------------------
+# 3) EDU County Plots
+# ---------------------------------------------
 plot(edu_combined$county, var_name = "Enrollment Value", state = "NC", top_or_bottom = "top", n = 20)
-
-# SC, bottom 7
 plot(edu_combined$county, var_name = "Enrollment Value", state = "SC", top_or_bottom = "bottom", n = 7)
-
-# Default (uses NC top 5)
-plot(edu_combined$county, var_name = "Enrollment Value")
-
-# PA, top 8
+plot(edu_combined$county, var_name = "Enrollment Value") # default (NC, top 5)
 plot(edu_combined$county, var_name = "Enrollment Value", state = "PA", top_or_bottom = "top", n = 8)
 
-```
-
-## Question 6: Process PST Data Sets
-
-We repeat the same workflow for the four PST datasets.
-
-```{r}
+# ---------------------------------------------
+# 4) PST Data Processing
+# ---------------------------------------------
 pst1 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01a.csv", value = "Enrollment Value")
 pst2 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01b.csv", value = "Enrollment Value")
 pst3 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01c.csv", value = "Enrollment Value")
 pst4 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01d.csv", value = "Enrollment Value")
 
-# Combine step by step
 pst12 <- combine_wrapper_results(pst1, pst2)
 pst34 <- combine_wrapper_results(pst3, pst4)
 pst_combined <- combine_wrapper_results(pst12, pst34)
 
-```
-
-## Question 7: State Plot for PST Data
-
-```{r}
+# ---------------------------------------------
+# 5) PST State Plot
+# ---------------------------------------------
 plot(pst_combined$noncounty, var_name = "Enrollment Value")
 
-```
-
-## Question 8: County Plots for PST Data
-
-```{r}
-# CA, top 15
+# ---------------------------------------------
+# 6) PST County Plots
+# ---------------------------------------------
 plot(pst_combined$county, var_name = "Enrollment Value", state = "CA", top_or_bottom = "top", n = 15)
-
-# TX, top 4
 plot(pst_combined$county, var_name = "Enrollment Value", state = "TX", top_or_bottom = "top", n = 4)
-
-# Default
-plot(pst_combined$county, var_name = "Enrollment Value")
-
-# NY, top 10
+plot(pst_combined$county, var_name = "Enrollment Value") # default (NC, top 5)
 plot(pst_combined$county, var_name = "Enrollment Value", state = "NY", top_or_bottom = "top", n = 10)
-
-```
