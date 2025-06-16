@@ -13,7 +13,7 @@ Quarto enables you to weave together content and executable code into a finished
 
 ##Read in Data
 
-```{r}
+```{r setup, message = FALSE, warning = FALSE}
 library(tidyverse)
 data <- read.csv("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv")
 
