@@ -5,17 +5,10 @@ format: pdf
 editor: visual
 ---
 
-## Question 1: Load Packages and Functions
+## Load Packages and Functions
 
 In this section, we load all necessary libraries and our custom functions file.
 
-<<<<<<< HEAD
-## Running Code
-
-##Read in Data
-
-=======
->>>>>>> 4f661713d2cbc08a3bc64ebe6c8ba67a0dbb20aa
 ```{r setup, message = FALSE, warning = FALSE}
 library(tidyverse)
 library(readr)
@@ -25,7 +18,40 @@ library(ggplot2)
 source("functions.R")
 ```
 
-## Question 2: Process the EDU Data Sets
+## Task 1: Data Processing
+
+### Question 1: Read in the dataset
+
+We want to read in some of this Census data set, but not all of it. Here we specify which columns we want to read in and we named this data set: df_selected. We then slice the first 5 lines to display them to confirm we read the data in correctly.
+```{r}
+#Read in the data while selecting specific columns
+df_selected <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", show_col_types = FALSE) %>%
+  select(Area_name, STCOU, ends_with("D")) %>% #select specified columns
+  rename(area_name = Area_name) #rename "Area_name" as directed
+
+#Display the first 5 lines
+df_selected %>%
+slice(1:5)
+```
+### Question 2
+
+Now we want to convert the data into long format where each row has only one enrollment value for area_name. This converted data will be called df_long. We then display the first 5 rows to make sure everything looks as expected.
+
+```{r}
+df_long <- pivot_longer(
+  df_selected,
+  cols = ends_with("D"),
+  names_to = "Survey",
+  values_to = "Enrollment Value"
+)
+
+#Display the first 5 lines
+df_long %>%
+  slice(1:5)
+```
+
+
+## Process the EDU Data Sets
 
 We run our wrapper function on the two EDU datasets and inspect the results.
 
