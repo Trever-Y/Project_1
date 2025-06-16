@@ -22,7 +22,8 @@ source("functions.R")
 
 ### Question 1: Read in the dataset
 
-We want to read in some of this Census data set, but not all of it. Here we specify which columns we want to read in and we named this data set: df_selected. We then slice the first 5 lines to display them to confirm we read the data in correctly.
+We want to read in some of this Census data set, but not all of it. Here we specify which columns we want to read in and we named this data set: `df_selected`. We then `slice` the first 5 lines to display them to confirm we read the data in correctly.
+
 ```{r}
 #Read in the data while selecting specific columns
 df_selected <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", show_col_types = FALSE) %>%
@@ -33,9 +34,10 @@ df_selected <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv"
 df_selected %>%
 slice(1:5)
 ```
+
 ### Question 2
 
-Now we want to convert the data into long format where each row has only one enrollment value for area_name. This converted data will be called df_long. We then display the first 5 rows to make sure everything looks as expected.
+Now we want to convert the data into long format where each row has only one enrollment value for `area_name`. This converted data will be called `df_long`. We then display the first 5 rows to make sure everything looks as expected.
 
 ```{r}
 df_long <- pivot_longer(
@@ -48,6 +50,46 @@ df_long <- pivot_longer(
 #Display the first 5 lines
 df_long %>%
   slice(1:5)
+```
+
+### Question 3
+
+Now we need to separate some values that are currently combined in `Survey`. The first 7 digits of `Survey` are currently a measurement (public school enrollment) and the last 2 digits followed by D are the school year. We want to separate these values to create 2 corresponding variables and turn the year into a 4 digit format. Since we will not be working with any data that was before the year 1925 or after the year 2025, we can do some simple math. The `Year` 1987 will be referring to the Fall 1986-1987 school year.
+
+```{r}
+#Separate and create variables from Survey
+long_updated <- df_long %>%
+  mutate(
+    Year = as.numeric(substr(Survey, 8, 9)),
+    Year = ifelse(Year > 25, Year + 1900, Year + 2000),
+    Measurement = substr(Survey, 1, 7)
+  )
+#Display the first 5 lines
+long_updated %>%
+  slice(1:5)
+```
+
+### Question 4
+
+Now we want to create a data set for non-county data and a data set for only county level data. As directed, we will add a class to the county level data tibble that's called `county` and we will create a class for the non-county data called `state`. Then we will print the first 10 rows of each tibble to make sure they look correct.
+
+```{r}
+#Create the county and state data sets
+county_idx <- grep(", \\w\\w", long_updated$area_name)
+county_tibble <- long_updated[county_idx, ]
+state_tibble <- long_updated[-county_idx, ]
+
+#add class accordingly
+class(county_tibble) <- c("county", class(county_tibble ))
+class(state_tibble) <- c("state", class(state_tibble))
+
+#display first 10 lines of county data
+county_tibble  %>%
+slice(1:10)
+
+#display first 10 lines of noncounty data
+state_tibble %>%
+slice(1:10)
 ```
 
 

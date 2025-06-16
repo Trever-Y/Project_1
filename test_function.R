@@ -31,14 +31,14 @@ head(df_long)
 # ----------------------------------------------------------
 # 2) survey_function
 # ----------------------------------------------------------
-df_long <- df_long %>%
+long_updated <- df_long %>%
   mutate(
     Year = as.numeric(substr(Survey, 8, 9)),
     Year = ifelse(Year > 25, Year + 1900, Year + 2000),
     Measurement = substr(Survey, 1, 7)
   )
 
-head(df_long)
+head(long_updated)
 
 # ----------------------------------------------------------
 # 3) state_function
@@ -53,9 +53,9 @@ head(df_long)
 # ----------------------------------------------------------
 # 5) create_datasets equivalent
 # ----------------------------------------------------------
-county_idx <- grep(", \\w\\w", df_long$area_name)
-county <- df_long[county_idx, ]
-noncounty <- df_long[-county_idx, ]
+county_idx <- grep(", \\w\\w", long_updated$area_name)
+county <- long_updated[county_idx, ]
+noncounty <- long_updated[-county_idx, ]
 
 class(county) <- c("county", class(county))
 class(noncounty) <- c("state", class(noncounty))
