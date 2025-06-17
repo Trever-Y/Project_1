@@ -13,8 +13,6 @@ In this section, we load all necessary libraries and our custom functions file.
 library(tidyverse)
 library(readr)
 library(ggplot2)
-
-
 ```
 
 ## Task 1: Data Processing
@@ -25,7 +23,9 @@ We want to read in some of this Census data set, but not all of it. Here we spec
 
 ```{r}
 #Read in the data while selecting specific columns
-df_selected <- read_csv("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", show_col_types = FALSE) %>%
+df_selected <- read_csv(
+  "https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", 
+  show_col_types = FALSE) %>%
   select(Area_name, STCOU, ends_with("D")) %>% #select specified columns
   rename(area_name = Area_name) #rename "Area_name" as directed
 
@@ -115,15 +115,38 @@ state_tibble <- state_tibble %>%
   mutate(area_name = toupper(area_name)) %>%
   mutate(
     Division = case_when(
-      area_name %in% c("CONNECTICUT", "MAINE", "MASSACHUSETTS", "NEW HAMPSHIRE", "RHODE ISLAND", "VERMONT") ~ "New England",
-      area_name %in% c("NEW JERSEY", "NEW YORK", "PENNSYLVANIA") ~ "Middle Atlantic",
-      area_name %in% c("ILLINOIS", "INDIANA", "MICHIGAN", "OHIO", "WISCONSIN") ~ "East North Central",
-      area_name %in% c("IOWA", "KANSAS", "MINNESOTA", "MISSOURI", "NEBRASKA", "NORTH DAKOTA", "SOUTH DAKOTA") ~ "West North Central",
-      area_name %in% c("DELAWARE", "MARYLAND", "DISTRICT OF COLUMBIA", "VIRGINIA", "WEST VIRGINIA", "NORTH CAROLINA", "SOUTH CAROLINA", "GEORGIA", "FLORIDA") ~ "South Atlantic",
-      area_name %in% c("ALABAMA", "KENTUCKY", "MISSISSIPPI", "TENNESSEE") ~ "East South Central",
-      area_name %in% c("ARKANSAS", "LOUISIANA", "OKLAHOMA", "TEXAS") ~ "West South Central",
-      area_name %in% c("ARIZONA", "COLORADO", "IDAHO", "MONTANA", "NEVADA", "NEW MEXICO", "UTAH", "WYOMING") ~ "Mountain",
-      area_name %in% c("ALASKA", "CALIFORNIA", "HAWAII", "OREGON", "WASHINGTON") ~ "Pacific",
+      area_name %in% c(
+        "CONNECTICUT", "MAINE", "MASSACHUSETTS", 
+        "NEW HAMPSHIRE", "RHODE ISLAND", "VERMONT"
+        ) ~ "New England",
+      area_name %in% c(
+        "NEW JERSEY", "NEW YORK", "PENNSYLVANIA"
+        ) ~ "Middle Atlantic",
+      area_name %in% c(
+        "ILLINOIS", "INDIANA", "MICHIGAN", "OHIO", "WISCONSIN"
+        ) ~ "East North Central",
+      area_name %in% c(
+        "IOWA", "KANSAS", "MINNESOTA", "MISSOURI", "NEBRASKA", 
+        "NORTH DAKOTA", "SOUTH DAKOTA"
+        ) ~ "West North Central",
+      area_name %in% c(
+        "DELAWARE", "MARYLAND", "DISTRICT OF COLUMBIA", 
+        "VIRGINIA", "WEST VIRGINIA", "NORTH CAROLINA", 
+        "SOUTH CAROLINA", "GEORGIA", "FLORIDA"
+        ) ~ "South Atlantic",
+      area_name %in% c(
+        "ALABAMA", "KENTUCKY", "MISSISSIPPI", "TENNESSEE"
+        ) ~ "East South Central",
+      area_name %in% c(
+        "ARKANSAS", "LOUISIANA", "OKLAHOMA", "TEXAS"
+        ) ~ "West South Central",
+      area_name %in% c(
+        "ARIZONA", "COLORADO", "IDAHO", "MONTANA", 
+        "NEVADA", "NEW MEXICO", "UTAH", "WYOMING"
+        ) ~ "Mountain",
+      area_name %in% c(
+        "ALASKA", "CALIFORNIA", "HAWAII", "OREGON", "WASHINGTON"
+        ) ~ "Pacific",
       TRUE ~ "ERROR"
     )
   )
@@ -183,7 +206,8 @@ Now we are creating a function to do step 5.
 ```{r}
 state_function <- function(county_tibble) {
   new_county_tibble <- county_tibble %>%
-    mutate(State = substr(area_name, start = nchar(area_name) - 1, stop = nchar(area_name)))
+    mutate(State = substr(area_name, start = nchar(area_name) - 1, 
+                          stop = nchar(area_name)))
   return(new_county_tibble)
 }
 ```
@@ -302,7 +326,9 @@ plot.state <- function(df, var_name = "Enrollment Value") {
       title = "Mean Value per Division over Years",
       y = paste("Mean of", var_name),
       x = "Year"
-    )
+    )+
+    scale_y_continuous(labels = scales::comma) +  # normal number format
+    guides(color = guide_legend(ncol = 2))        # multi-column legend
 }
 ```
 
@@ -341,7 +367,9 @@ plot.county <- function(df, var_name = "Enrollment Value",
       title = paste(top_or_bottom, n, "counties in", state),
       y = var_name,
       x = "Year"
-    )
+    )+
+    scale_y_continuous(labels = scales::comma) +  # normal number format
+    guides(color = guide_legend(ncol = 2))        # multi-column legend
 }
 ```
 
@@ -352,8 +380,14 @@ plot.county <- function(df, var_name = "Enrollment Value",
 We run our wrapper function on the two EDU data sets and inspect the results. Since we are looking at enrollment values, all of our plots and code use `value = Enrollment value`. This is referring to the census observed enrollment counts at given locations and given years. Again, With our current data sets, we are looking at the Public school enrollment for school years.
 
 ```{r}
-edu1 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", value = "Enrollment Value")
-edu2 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/EDU01b.csv", value = "Enrollment Value")
+edu1 <- my_wrapper(
+  "https://www4.stat.ncsu.edu/~online/datasets/EDU01a.csv", 
+  value = "Enrollment Value"
+  )
+edu2 <- my_wrapper(
+  "https://www4.stat.ncsu.edu/~online/datasets/EDU01b.csv", 
+  value = "Enrollment Value"
+  )
 
 # Inspect to ensure correctness
 head(edu1$county)
@@ -387,16 +421,19 @@ Below are various plots for county data, demonstrating flexibility in selecting 
 
 ```{r}
 # NC, top 20
-plot(edu_combined$county, var_name = "Enrollment Value", state = "NC", top_or_bottom = "top", n = 20)
+plot(edu_combined$county, var_name = "Enrollment Value", 
+     state = "NC", top_or_bottom = "top", n = 20)
 
 # SC, bottom 7
-plot(edu_combined$county, var_name = "Enrollment Value", state = "SC", top_or_bottom = "bottom", n = 7)
+plot(edu_combined$county, var_name = "Enrollment Value", 
+     state = "SC", top_or_bottom = "bottom", n = 7)
 
 # Default (uses NC top 5)
 plot(edu_combined$county, var_name = "Enrollment Value")
 
 # PA, top 8
-plot(edu_combined$county, var_name = "Enrollment Value", state = "PA", top_or_bottom = "top", n = 8)
+plot(edu_combined$county, var_name = "Enrollment Value", 
+     state = "PA", top_or_bottom = "top", n = 8)
 
 ```
 
@@ -407,10 +444,22 @@ plot(edu_combined$county, var_name = "Enrollment Value", state = "PA", top_or_bo
 We repeat the same workflow for the four PST data sets. We start by processing that data then combining the data sets. For the PST data, we are looking at Resident total population estimates at given locations on given years. `Year` 1971 is referencing July 1st 1971.
 
 ```{r}
-pst1 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01a.csv", value = "Resident Population")
-pst2 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01b.csv", value = "Resident Population")
-pst3 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01c.csv", value = "Resident Population")
-pst4 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01d.csv", value = "Resident Population")
+pst1 <- my_wrapper(
+  "https://www4.stat.ncsu.edu/~online/datasets/PST01a.csv", 
+  value = "Resident Population"
+  )
+pst2 <- my_wrapper(
+  "https://www4.stat.ncsu.edu/~online/datasets/PST01b.csv", 
+  value = "Resident Population"
+  )
+pst3 <- my_wrapper(
+  "https://www4.stat.ncsu.edu/~online/datasets/PST01c.csv", 
+  value = "Resident Population"
+  )
+pst4 <- my_wrapper(
+  "https://www4.stat.ncsu.edu/~online/datasets/PST01d.csv", 
+  value = "Resident Population"
+  )
 
 # Combine step by step
 pst12 <- combine_wrapper_results(pst1, pst2)
@@ -434,15 +483,18 @@ Finally, we want to demonstrate the flexibility of our summary functions with th
 
 ```{r}
 # CA, top 15
-plot(pst_combined$county, var_name = "Resident Population", state = "CA", top_or_bottom = "top", n = 15)
+plot(pst_combined$county, var_name = "Resident Population", 
+     state = "CA", top_or_bottom = "top", n = 15)
 
 # TX, top 4
-plot(pst_combined$county, var_name = "Resident Population", state = "TX", top_or_bottom = "top", n = 4)
+plot(pst_combined$county, var_name = "Resident Population", 
+     state = "TX", top_or_bottom = "top", n = 4)
 
 # Default
 plot(pst_combined$county, var_name = "Resident Population")
 
 # NY, top 10
-plot(pst_combined$county, var_name = "Resident Population", state = "NY", top_or_bottom = "top", n = 10)
+plot(pst_combined$county, var_name = "Resident Population", 
+     state = "NY", top_or_bottom = "top", n = 10)
 
 ```
