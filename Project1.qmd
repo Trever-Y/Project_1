@@ -239,7 +239,7 @@ division_function <- function(state_tibble) {
 
 ### Questions 4-6 with 1 function
 
-In order to create two new tibbles from the output from step 3 and apply steps 5-6, we need to create a new function to perform the following: take in the output from step 3, Creates 2 tibbles like in step 4, then calls the functions from steps 5 and 6 to return two final tibbles. 
+In order to create two new tibbles from the output from step 3 and apply steps 5-6, we need to create a new function to perform the following: take in the output from step 3, Creates 2 tibbles like in step 4, then calls the functions from steps 5 and 6 to return two final tibbles.
 
 ```{r}
 create_datasets <- function(long_updated) {
@@ -289,6 +289,7 @@ combine_wrapper_results <- function(wrapper1, wrapper2) {
 ### Plot function for state
 
 Now we want to summarize some of our data. We want to do this efficiently, so we will create some functions. Here, we do not want to include any of the `Divisions` that are listed as `ERROR` in our data sets. This function will be used to create our state plots.
+
 ```{r}
 plot.state <- function(df, var_name = "Enrollment Value") {
   df %>%
@@ -307,7 +308,8 @@ plot.state <- function(df, var_name = "Enrollment Value") {
 
 ### Plot function for county
 
-We will now create a similar function for our county data set, however we will add some calculations to this function. We want to be able to display the top or bottom  mean enrollment values with our function, so we have to do some sorting. It's important to note that we are sorting based on mean values, but we are plotting the actual statistic values.
+We will now create a similar function for our county data set, however we will add some calculations to this function. We want to be able to display the top or bottom mean enrollment values with our function, so we have to do some sorting. It's important to note that we are sorting based on mean values, but we are plotting the actual statistic values.
+
 ```{r}
 plot.county <- function(df, var_name = "Enrollment Value",
                         state = "NC", top_or_bottom = "top", n = 5) {
@@ -361,7 +363,7 @@ head(edu1$state)
 
 ### Combine EDU Data Sets
 
-Here we use our combining function to merge the two processed data sets. We then display the first few rows to make sure this worked as intended. 
+Here we use our combining function to merge the two processed data sets. We then display the first few rows to make sure this worked as intended.
 
 ```{r}
 edu_combined <- combine_wrapper_results(edu1, edu2)
@@ -402,12 +404,13 @@ plot(edu_combined$county, var_name = "Enrollment Value", state = "PA", top_or_bo
 
 ### Process PST Data Sets
 
-We repeat the same workflow for the four PST data sets. We start by processing that data then combining the data sets. For the PST data, we are looking at Resident total population estimates at given locations on given years. `Year` 1971 is referencing July 1st 1971. 
+We repeat the same workflow for the four PST data sets. We start by processing that data then combining the data sets. For the PST data, we are looking at Resident total population estimates at given locations on given years. `Year` 1971 is referencing July 1st 1971.
+
 ```{r}
-pst1 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01a.csv", value = "Enrollment Value")
-pst2 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01b.csv", value = "Enrollment Value")
-pst3 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01c.csv", value = "Enrollment Value")
-pst4 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01d.csv", value = "Enrollment Value")
+pst1 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01a.csv", value = "Resident Population")
+pst2 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01b.csv", value = "Resident Population")
+pst3 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01c.csv", value = "Resident Population")
+pst4 <- my_wrapper("https://www4.stat.ncsu.edu/~online/datasets/PST01d.csv", value = "Resident Population")
 
 # Combine step by step
 pst12 <- combine_wrapper_results(pst1, pst2)
@@ -419,25 +422,27 @@ pst_combined <- combine_wrapper_results(pst12, pst34)
 ### State Plot for PST Data
 
 Now that the PST data is processed, we will make our state plot.
+
 ```{r}
-plot(pst_combined$state, var_name = "Enrollment Value")
+plot(pst_combined$state, var_name = "Resident Population")
 
 ```
 
 ### County Plots for PST Data
 
 Finally, we want to demonstrate the flexibility of our summary functions with the PST Data. As noted in the code chunk below, we created plots that show: CA top 15, TX top 4, the default plot function, and NY top 10.
+
 ```{r}
 # CA, top 15
-plot(pst_combined$county, var_name = "Enrollment Value", state = "CA", top_or_bottom = "top", n = 15)
+plot(pst_combined$county, var_name = "Resident Population", state = "CA", top_or_bottom = "top", n = 15)
 
 # TX, top 4
-plot(pst_combined$county, var_name = "Enrollment Value", state = "TX", top_or_bottom = "top", n = 4)
+plot(pst_combined$county, var_name = "Resident Population", state = "TX", top_or_bottom = "top", n = 4)
 
 # Default
-plot(pst_combined$county, var_name = "Enrollment Value")
+plot(pst_combined$county, var_name = "Resident Population")
 
 # NY, top 10
-plot(pst_combined$county, var_name = "Enrollment Value", state = "NY", top_or_bottom = "top", n = 10)
+plot(pst_combined$county, var_name = "Resident Population", state = "NY", top_or_bottom = "top", n = 10)
 
 ```
