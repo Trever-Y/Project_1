@@ -7,7 +7,7 @@ editor: visual
 
 ## Load Packages and Functions
 
-In this section, we load all necessary libraries and our custom functions file.
+In this section, we load all necessary libraries.
 
 ```{r setup, message = FALSE, warning = FALSE}
 library(tidyverse)
