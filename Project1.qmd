@@ -63,6 +63,7 @@ long_updated <- df_long %>%
     Year = ifelse(Year > 25, Year + 1900, Year + 2000),
     Item_ID = substr(Survey, 1, 7)
   )
+
 #Display the first 5 lines
 long_updated %>%
   slice(1:5)
@@ -159,7 +160,7 @@ state_tibble %>% count(Division, area_name) %>% print(n = 52)
 
 ### Questions 1-2 with a function
 
-We created a function that has an optional argument to allow the user to specify the name of the column representing the value (which is `Enrollment Value` in our case)
+We created a function that has an optional argument to allow the user to specify the name of the column representing the value (which is `Enrollment Value` in this case)
 
 ```{r}
 #Create the function
@@ -284,7 +285,7 @@ create_datasets <- function(long_updated) {
 
 ### Create a wrapper function
 
-We can combine all of these functions into one function call. We want this function to take in a URL of a .csv file and apply all of the functions listed above.
+We can combine all of these functions into one function call. We want this function to take in a URL of a `.csv` file and apply all of the functions listed above. We still want to be able to easily change `Enrollment Value` for when we use other census data sets.
 
 ```{r}
 my_wrapper <- function(url, value = "Enrollment Value") {
@@ -334,7 +335,7 @@ plot.state <- function(df, var_name = "Enrollment Value") {
 
 ### Plot function for county
 
-We will now create a similar function for our county data set, however we will add some calculations to this function. We want to be able to display the top or bottom mean enrollment values with our function, so we have to do some sorting. It's important to note that we are sorting based on mean values, but we are plotting the actual statistic values.
+We will now create a similar function for our county data set, however we will add some calculations to this function. We want to be able to sort by the top or bottom mean enrollment values with our function, so we have to do some sorting. It's important to note that we are sorting based on mean values, but we are plotting the actual statistic values (`Enrollmen Value` and later we will display `Resident Population`).
 
 ```{r}
 plot.county <- function(df, var_name = "Enrollment Value",
@@ -441,7 +442,7 @@ plot(edu_combined$county, var_name = "Enrollment Value",
 
 ### Process PST Data Sets
 
-We repeat the same workflow for the four PST data sets. We start by processing that data then combining the data sets. For the PST data, we are looking at Resident total population estimates at given locations on given years. `Year` 1971 is referencing July 1st 1971.
+We repeat the same workflow for the four PST data sets. We start by processing that data then combining the data sets. For the PST data, we are looking at Resident total population estimates at given locations on given years. `Year` 1971 is referencing July 1st 1971. We will be using `Resident Population` as our statistic value.
 
 ```{r}
 pst1 <- my_wrapper(
